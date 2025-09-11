@@ -1,6 +1,7 @@
-Ext.create('Ext.form.Panel', {
+Ext.define('MyApp.view.login.Login', {
+    extend: 'Ext.form.Panel',
+    xtype: 'login',
     title: 'Авторизация',
-    renderTo: Ext.getBody(),
     bodyPadding: 5,
     width: 350,
     
@@ -24,8 +25,11 @@ Ext.create('Ext.form.Panel', {
             var login = Ext.getCmp('login').getValue();
             var password = Ext.getCmp('password').getValue();
             if (login.trim() === 'admin' && password.trim() === 'padmin') {
-                console.log('OK');
+                this.up('form').destroy();
+                Ext.create('MyApp.view.main.Main', {
+                    renderTo: Ext.getBody()
+                });
             }
         }
     }]
-}).center();
+});
