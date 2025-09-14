@@ -5,12 +5,22 @@ Ext.application({
 
     controllers: [
         'LoginController',
-        'MainController'
+        'MainController',
+        'ProductCardController'
     ],
 
     views: [
         'MyApp.view.login.Login',
-        'MyApp.view.main.Main'
+        'MyApp.view.main.Main',
+        'MyApp.view.productcard.ProductCard'
+    ],
+
+    models: [
+        'Products'
+    ],
+
+    stores: [
+        'ProductsStore'
     ],
 
     launch: function() {

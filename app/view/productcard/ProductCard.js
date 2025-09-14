@@ -1,5 +1,5 @@
 Ext.define('MyApp.view.productcard.ProductCard', {
-    extend: 'Ext.window.Window',
+    extend: 'Ext.panel.Panel',
     xtype: 'productcard',
 
     title: 'Карточка товара',
@@ -25,15 +25,15 @@ Ext.define('MyApp.view.productcard.ProductCard', {
                 items: [
                     {
                         xtype: 'displayfield',
-                        fieldLabel: 'Имя',
-                        name: 'name',
-                        value: me.productData.name || 'Не указано'
+                        fieldLabel: 'ID',
+                        name: 'id',
+                        value: me.productData.id || 'Не указано'
                     },
                     {
                         xtype: 'displayfield',
-                        fieldLabel: 'Описание',
-                        name: 'description',
-                        value: me.productData.description || 'Не указано'
+                        fieldLabel: 'Имя',
+                        name: 'name',
+                        value: me.productData.name || 'Не указано'
                     },
                     {
                         xtype: 'textfield',
@@ -54,7 +54,8 @@ Ext.define('MyApp.view.productcard.ProductCard', {
             buttons: [{
                 text: 'Сохранить',
                 handler: function() {
-                    me.close();
+                    var controller = MyApp.app.getController('ProductCardController');
+                    controller.onSaveButtonClick(this);
                 }
             }, {
                 text: 'Отмена',

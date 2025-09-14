@@ -5,11 +5,21 @@ Ext.define('MyApp.Application', {
 
     controllers: [
         'LoginController',
-        'MainController'
+        'MainController',
+        'ProductCardController'
     ],
 
     views: [
         'login.Login',
-        'main.Main'
+        'main.Main',
+        'productcard.ProductCard'
+    ],
+
+    models: [
+        'Products'
+    ],
+
+    stores: [
+        'ProductsStore'
     ]
 });

@@ -3,9 +3,9 @@ Ext.define('MyApp.model.Products', {
 
     fields: [
         {name: 'ID', type: 'int'},
-        {name: 'Имя', type: 'int'},
-        {name: 'Описание', type: 'int'},
-        {name: 'Цена', type: 'int'},
+        {name: 'Имя', type: 'string'},
+        {name: 'Описание', type: 'string'},
+        {name: 'Цена', type: 'float'},
         {name: 'Количество', type: 'int'}
     ]
 })
