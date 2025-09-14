@@ -1,8 +1,14 @@
 Ext.application({
-    name: 'MyApp',
     extend: 'MyApp.Application',
+    name: 'MyApp',
+    appFolder: 'app',
 
-    requires: [
+    controllers: [
+        'LoginController',
+        'MainController'
+    ],
+
+    views: [
         'MyApp.view.login.Login',
         'MyApp.view.main.Main'
     ],
