@@ -11,130 +11,61 @@ Ext.define('MyApp.controller.MainController', {
 
     addProductsTab: function(button) {
         var store = Ext.getStore('ProductsStore'),
-            grid = Ext.create('Ext.grid.Panel', {
-            store: store,
-
-            columns: [
-                { text: 'ID', dataIndex: 'id', flex: 1 },
-                { text: 'Имя', dataIndex: 'name', flex: 1 },
-                { text: 'Описание', dataIndex: 'description', flex: 1 },
-                { text: 'Цена', dataIndex: 'price', width: 200 },
-                { text: 'Кол-во', dataIndex: 'quantity', flex: 1,
-                    renderer: this.CellColoring
+            filterContainer = Ext.create('Ext.panel.Panel', {
+            title: 'Список товаров',
+            layout: 'vbox',
+            items: [
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'ID:',
+                    itemId: 'idFilter',
+                    emptyText: 'Введите фильтр...',
+                    enableKeyEvents: true,
+                    listeners: {
+                        keyup: this.FilterKeyUp.bind(this)
+                    }
+                },
+                {
+                    xtype: 'textfield',
+                    fieldLabel: 'Описание:',
+                    itemId: 'descriptionFilter',
+                    emptyText: 'Введите фильтр...',
+                    enableKeyEvents: true,
+                    listeners: {
+                        keyup: this.FilterKeyUp.bind(this)
+                    }
                 }
-            ],
-
-            listeners: {
-                itemclick: this.CellClick.bind(this)
-            }
+            ]
         });
-
-        var tabPanel = button.up('mainview').down('#mainTabPanel');
-        tabPanel.add({
-            title: 'Товары',
-            items: [grid]
-        });
-
-        tabPanel.setActiveTab(tabPanel.items.length - 1);
-    },
-
-    CellColoring: function(value, metaData) {
-        if (value === 0) {
-            metaData.style = 'background-color: red';
-        }
-        return value;
-    },
-
-    CellClick: function(grid, record, item, index, e, options) {
-        this.openProductCard(record);
-    },
-
-    openProductCard: function(record) {
-        console.log('Данные товара перед созданием окна:', record.data);
-        Ext.create('MyApp.view.productcard.ProductCard', {
-            productData: record.data,
-            renderTo: Ext.getBody()
-        }).center();
-    },
-
-    logout: function(button) {
-        var mainView = button.up('mainview');
-        mainView.destroy();
-        var loginView = Ext.create('MyApp.view.login.Login', {
-            renderTo: Ext.getBody()
-        }).center();
-
-        var loginField = loginView.down('#login');
-        var passwordField = loginView.down('#password');
-
-        loginField.reset();
-        passwordField.reset();
-    }
-})
-
-/*
-Ext.define('MyApp.controller.MainController', {
-    extend: 'Ext.app.Controller',
-    views: ['main.Main'],
-
-    init: function() {
-        this.control({
-            'mainview button[id=addProducts]': {click: this.addProductsTab},
-            'mainview button[text=Выйти]': {click: this.logout}
-        })
-    },
-
-    addProductsTab: function(button) {
-        var store = Ext.getStore('ProductsStore'),
-            container = Ext.create('Ext.container.Container', {
-                layout: 'vbox',
-                items: [
-                    {
-                        xtype: 'container',
-                        layout: 'vbox',
-                        items: [
-                            {
-                                xtype: 'textfield',
-                                fieldLabel: 'ID товара',
-                                itemId: 'productIdFilter',
-                                enableKeyEvents: true,
-                                listeners: { keyup: this.onFilterKeyUp.bind(this) }
-                            },
-                            {
-                                xtype: 'textfield',
-                                fieldLabel: 'Описание товара',
-                                itemId: 'productDescriptionFilter',
-                                enableKeyEvents: true,
-                                listeners: { keyup: this.onFilterKeyUp.bind(this) }
-                            }
-                        ]
-                    }, {
-                        xtype: 'gridpanel',
-                        store: store,
-
-                        columns: [
-                            { text: 'ID', dataIndex: 'id', flex: 1 },
-                            { text: 'Имя', dataIndex: 'name', flex: 1 },
-                            { text: 'Описание', dataIndex: 'description', flex: 1 },
-                            { text: 'Цена', dataIndex: 'price', width: 200 },
-                            { text: 'Кол-во', dataIndex: 'quantity', flex: 1,
-                                renderer: this.CellColoring
-                            }
-                        ],
-
-                        listeners: {
-                            itemclick: this.CellClick.bind(this)
+            var grid = Ext.create('Ext.grid.Panel', {
+                store: store,
+                columns: [
+                    { text: 'ID', dataIndex: 'id', flex: 1 },
+                    { text: 'Имя', dataIndex: 'name', flex: 1 },
+                    { text: 'Описание', dataIndex: 'description', flex: 1 },
+                    { text: 'Цена', dataIndex: 'price', width: 200 },
+                    { text: 'Кол-во', dataIndex: 'quantity', flex: 1,
+                        renderer: this.CellColoring
+                    }
+                ],
+                listeners: {
+                    cellclick: (grid, td, cellIndex, record, tr, rowIndex, e, eOpts) => {
+                        if (cellIndex === 1) {
+                            console.log('OK');
+                            this.openProductCard(record);
                         }
                     }
-                ]
+                }
+
             });
 
-        var tabPanel = button.up('mainview').down('#mainTabPanel');
-        var newTab = tabPanel.add({
-            title: 'Список товаров',
-            items: [container]
-        });
 
+        var tabPanel = button.up('mainview').down('#mainTabPanel');
+
+        var newTab = tabPanel.add({
+            title: 'Товары',
+            items: [filterContainer, grid]
+        });
         tabPanel.setActiveTab(newTab);
     },
 
@@ -145,48 +76,47 @@ Ext.define('MyApp.controller.MainController', {
         return value;
     },
 
-    CellClick: function(grid, record, item, index, e, options) {
-        this.openProductCard(record);
-    },
-
-    openProductCard: function(record) {
-        console.log('Данные товара перед созданием окна:', record.data);
-        Ext.create('MyApp.view.productcard.ProductCard', {
-            productData: record.data,
-            renderTo: Ext.getBody()
-        }).center();
-    },
-
-    onFilterKeyUp: function(field, event) {
+    FilterKeyUp: function(field, event) {
         if (event.getKey() === Ext.EventObject.ENTER) {
             var mainView = field.up('mainview');
-            var productId = mainView.down('#productIdFilter').getValue();
-            var productDescription = mainView.down('#productDescriptionFilter').getValue();
-
-            // Вызов метода фильтрации
-            mainView.filterProducts(productId, productDescription);
+            var productId = Number(mainView.down('#idFilter').getValue());
+            var productDescription = mainView.down('#descriptionFilter').getValue();
+            this.filterProducts(productId, productDescription);
         }
     },
 
     filterProducts: function(productId, productDescription) {
         var store = Ext.getStore('ProductsStore');
+        store.clearFilter(true);
 
-        // Применяем фильтры
-        store.clearFilter(true); // Сначала очищаем все фильтры
-
-        // Фильтр по идентификатору товара
         if (productId) {
-            store.filterBy(function(record) {
-                return record.get('id') === productId; // Точное совпадение
+            store.addFilter({
+                property: 'id',
+                value: Number(productId),
+                operator: '='
             });
         }
 
-        // Фильтр по описанию товара
         if (productDescription) {
-            store.filterBy(function(record) {
-                return record.get('name').toLowerCase().includes(productDescription.toLowerCase()); // Вхождение строки
+            store.addFilter({
+                property: 'name',
+                value: productDescription,
+                operator: 'like'
             });
         }
+    },
+
+    openProductCard: function(record) {
+        console.log('Данные товара перед созданием окна:', record.data);
+        Ext.create('MyApp.view.productcard.ProductCard', {
+            floating: true,
+            modal: true,
+            productData: record.data,
+            renderTo: Ext.getBody(),
+            style: {
+                zIndex: 1000
+            }
+        }).center();
     },
 
     logout: function(button) {
@@ -203,4 +133,3 @@ Ext.define('MyApp.controller.MainController', {
         passwordField.reset();
     }
 })
-*/

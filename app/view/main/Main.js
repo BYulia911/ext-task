@@ -22,6 +22,7 @@ Ext.define('MyApp.view.main.Main', {
             {
                 xtype: 'tabpanel',
                 width: '100%',
+                flex: 1,
                 itemId: 'mainTabPanel',
                 items: []
             }

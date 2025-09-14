@@ -20,11 +20,23 @@ Ext.define('MyApp.controller.ProductCardController', {
             var record = store.getById(productId);
             if (record) {
                 var changes = {};
-                if (record.get('price') !== Number(values.price)) {
-                    changes.price = Number(values.price);
+                var price = Number(values.price);
+                var quantity = Number(values.quantity);
+
+                if (price < 0) {
+                    Ext.Msg.alert('Ошибка', 'Цена не может быть отрицательной.');
+                    return;
                 }
-                if (record.get('quantity') !== Number(values.quantity)) {
-                    changes.quantity = Number(values.quantity);
+                if (quantity < 0) {
+                    Ext.Msg.alert('Ошибка', 'Количество не может быть отрицательным.');
+                    return;
+                }
+
+                if (record.get('price') !== price) {
+                    changes.price = price;
+                }
+                if (record.get('quantity') !== quantity) {
+                    changes.quantity = quantity;
                 }
 
                 if (Object.keys(changes).length > 0) {
